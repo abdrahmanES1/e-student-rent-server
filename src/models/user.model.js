@@ -47,13 +47,8 @@ UserSchema.pre('save', async function (next) {
 
 UserSchema.methods.getSignedJwtToken = function () {
     return jwt.sign({ id: this._id }, process.env.TOKEN_SECRET, {
-        expiresIn: process.env.JWT_EXPIRE
+        expiresIn: process.env.JWT_EXPIRE * process.env.JWT_EXPIRE 
     });
-};
-
-UserSchema.methods.matchPassword = async function (enteredPassword) {
-    const isMatch = await bcrypt.compare(enteredPassword, this.password);
-    return isMatch;
 };
 
 const UserModel = mongoose.model("users", UserSchema);
