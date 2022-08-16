@@ -1,0 +1,54 @@
+const express = require('express');
+const helmet = require('helmet');
+const morgan = require('morgan');
+const connectDB = require('./config/database')
+const cluster = require('cluster');
+const cors = require('cors');
+const errorMiddleware = require('./middlewares/error.middleware');
+const numCPUs = require('node:os').cpus().length;
+require('dotenv').config({ path: __dirname + '/../.env' }) 
+
+
+const app = express();
+const PORT = process.env.PORT || 4000;
+app.use(helmet());
+if (process.env.NODE_ENV === 'development') {
+    app.use(morgan('dev'));
+}
+app.use(express.json());
+app.use(cors({
+    origin: 'http://localhost:3000'
+}))
+
+app.use(errorMiddleware);
+connectDB();
+app.listen(PORT, () => {
+    console.log(`server running in port ${PORT}`);
+})
+
+// if (cluster.isPrimary) {
+//     console.log(`Primary ${process.pid} is running`);
+//     connectDB();
+
+//     // Fork workers.
+//     for (let i = 0; i < numCPUs; i++) {
+//         cluster.fork();
+//     }
+
+//     cluster.on('exit', (worker, code, signal) => {
+//         console.log(`worker ${worker.process.pid} died`);
+//     });
+
+//     cluster.on('online', function (worker) {
+//         console.log('Worker ' + worker.process.pid + ' is online');
+//     });
+
+// } else{
+
+//     app.listen(PORT, () => {
+//         console.log(`server running in port ${PORT}`);
+//     })
+
+// }
+
+module.exports =  app;
