@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { Schema, Model } = mongoose;
+const { Schema } = mongoose;
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require('dotenv').config({ path: __dirname + '../../.env' });
@@ -27,15 +27,15 @@ const UserSchema = new Schema({
         enum: ['user', 'admin'],
         default: 'user'
     },
-    isStudent: { type: Boolean, required : true },
+    isStudent: { type: Boolean, required: true },
     phone: { type: Number },
     adresse: { type: String },
     avatar: { type: String },
     reviews: [{ type: Schema.Types.ObjectId, ref: 'Review' }],
     locals: [{ type: Schema.Types.ObjectId, ref: 'Local' }],
 
-}, {timestamps: true});
- 
+}, { timestamps: true });
+
 UserSchema.pre('save', async function (next) {
     if (!this.isModified('password')) {
         next();
@@ -47,7 +47,7 @@ UserSchema.pre('save', async function (next) {
 
 UserSchema.methods.getSignedJwtToken = function () {
     return jwt.sign({ id: this._id }, process.env.TOKEN_SECRET, {
-        expiresIn: process.env.JWT_EXPIRE * process.env.JWT_EXPIRE 
+        expiresIn: process.env.JWT_EXPIRE * process.env.JWT_EXPIRE
     });
 };
 

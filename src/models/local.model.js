@@ -1,20 +1,21 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
+
 const LocalSchema = new Schema({
     // _id: Schema.Types.ObjectId,
-    title: { type: String, required: true },
-    description: { type: String, required: true },
-    adresse: { type: String, required: true },
-    price: { type: Number, required: true },
-    nbrRooms: { type: Number, required: true },
-    mainImage: { type: String, required: true },
+    title: { type: String, required: [true, 'please add a title'] },
+    description: { type: String, required: [true, 'please add a description'] },
+    adresse: { type: String, required: [true, 'please add a adresse'] },
+    price: { type: Number, required: [true, 'please add a price'] },
+    nbrRooms: { type: Number, required: [true, 'please add a room\'s Number'] },
+    mainImage: { type: String, required: [true, 'please add a Image'] },
     images: [{ type: String }],
     localisation: {
         lat: { type: Number, required: true },
         lng: { type: Number, required: true }
     },
-    user: { type: Schema.Types.ObjectId, ref: 'User' },
+    user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     reviews: [{ type: Schema.Types.ObjectId, ref: 'Review' }],
     universities: [{ type: Schema.Types.ObjectId, ref: 'University' }],
 

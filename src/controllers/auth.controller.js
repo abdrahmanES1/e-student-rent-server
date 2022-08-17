@@ -25,13 +25,13 @@ const login = asyncHandler(async (req, res, next) => {
 
     const user = await UserModel.findOne({ email }).select('+password');
     if (!user) {
-        return next(new ErrorResponse('Invalid credentials', 401));
+        return next(new ErrorResponse('email does not Exist please register first', 401));
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-        return next(new ErrorResponse('Invalid credentials', 401));
+        return next(new ErrorResponse('Wrong email or password', 401));
     }
 
     sendTokenResponse(user, 200, res);
