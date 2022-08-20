@@ -46,7 +46,6 @@ const getMe = asyncHandler(async (req, res, next) => {
     });
 });
 
-
 const sendTokenResponse = (user, statusCode, res) => {
     const token = user.getSignedJwtToken();
     

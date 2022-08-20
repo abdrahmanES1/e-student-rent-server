@@ -1,4 +1,3 @@
-
 function errorMiddleware(error, request, response, next) {
     const statusCode = error.statusCode || 500;
     const message = error.message || 'Something went wrong';
@@ -9,4 +8,5 @@ function errorMiddleware(error, request, response, next) {
             status: statusCode,
         });
 }
+
 module.exports = errorMiddleware;

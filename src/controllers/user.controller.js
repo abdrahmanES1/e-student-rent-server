@@ -26,7 +26,6 @@ const getUser = asyncHandler(async (req, res, next) => {
     });
 });
 
-
 const deleteUser = asyncHandler(async (req, res, next) => {
     const { id } = req.params;
     if (!mongoose.isValidObjectId(id)) {
@@ -45,7 +44,6 @@ const deleteUser = asyncHandler(async (req, res, next) => {
 
 });
 
-
 const modifyUser = asyncHandler(async (req, res, next) => {
     const { id } = req.params;
     const { city, name } = req.body;
@@ -62,8 +60,4 @@ const modifyUser = asyncHandler(async (req, res, next) => {
     });
 });
 
-
-
-module.exports = { getAllUniversities, getUniversity, deleteUniversity, modifyUniversity };
-
-
+module.exports = { getAllUsers, getUser, deleteUser, modifyUser };

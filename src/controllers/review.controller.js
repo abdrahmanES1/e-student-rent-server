@@ -1,10 +1,11 @@
-const { default: mongoose } = require('mongoose');
+const { default: mongoose  } = require('mongoose');
 const asyncHandler = require('../middlewares/async');
 const Review = require('../models/review.model');
 const ErrorResponse = require('../utils/errorResponse');
 
 const getAllReviews = asyncHandler(async (req, res, next) => {
-    const reviews = await Review.find();
+    const { populate } = req.query;
+    const reviews = await Review.find().populate(populate);
 
     res.status(200).send({
         "success": true,
@@ -14,21 +15,22 @@ const getAllReviews = asyncHandler(async (req, res, next) => {
 
 const getReview = asyncHandler(async (req, res, next) => {
     const { id } = req.params;
+    const { populate } = req.query;
 
     if (!mongoose.isValidObjectId(id)) {
         return next(new ErrorResponse("id not valid", 403));
     }
 
-    const review = await Review.findById(id);
+    const review = await Review.findById(id).populate(populate);
 
-    if(!review) {return next(new ErrorResponse('Review Does Not Exist', 403))}
+    if(!review) { return next(new ErrorResponse('Review Does Not Exist', 403)) }
 
     res.status(200).send({
         "success": true,
         review
     });
+    
 });
-
 
 const deleteReview = asyncHandler(async (req, res, next) => {
     const { id } = req.params;
@@ -78,16 +80,11 @@ const createReview = asyncHandler(async (req, res, next) => {
         description, rating, local, user
     })
 
+
     res.status(200).send({
         "success": true,
         review
     })
 })
 
-
-
-
-
 module.exports = { getAllReviews, getReview, deleteReview, modifyReview, createReview };
-
-

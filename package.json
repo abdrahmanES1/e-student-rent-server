@@ -5,7 +5,8 @@
   "author": "abdrahmanES1 <68553016+abdrahmanES1@users.noreply.github.com>",
   "license": "MIT",
   "scripts" : {
-    "start" : "nodemon index.js"
+    "dev": "nodemon index.js",
+    "start" : "node index.js"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",

@@ -6,8 +6,8 @@ const route = Router();
 route.get('/reviews', getAllReviews);
 route.get('/reviews/:id', getReview);
 route.post('/reviews', createReview);
-route.put('/reviews/:id', deleteReview);
-route.delete('/reviews/:id', modifyReview);
+route.put('/reviews/:id', modifyReview);
+route.delete('/reviews/:id', deleteReview);
 
 // get post reviews
 // get user reviews

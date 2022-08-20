@@ -30,7 +30,6 @@ const getUniversity = asyncHandler(async (req, res, next) => {
     });
 });
 
-
 const deleteUniversity = asyncHandler(async (req, res, next) => {
     const { id } = req.params;
     if (!mongoose.isValidObjectId(id)) {
@@ -50,7 +49,6 @@ const deleteUniversity = asyncHandler(async (req, res, next) => {
 
 });
 
-
 const modifyUniversity = asyncHandler(async (req, res, next) => {
     const { id } = req.params;
     const { city, name } = req.body;
@@ -68,7 +66,6 @@ const modifyUniversity = asyncHandler(async (req, res, next) => {
         university
     });
 });
-
 
 const createUniversity = asyncHandler(async (req, res, next) => {
     const { city, name, localisation } = req.body;
@@ -92,8 +89,4 @@ const createUniversity = asyncHandler(async (req, res, next) => {
 
 })
 
-
-
 module.exports = { getAllUniversities, getUniversity, deleteUniversity, modifyUniversity, createUniversity };
-
-
