@@ -2,9 +2,11 @@ const { default: mongoose } = require('mongoose');
 const asyncHandler = require('../middlewares/async');
 const User = require('../models/user.model');
 const ErrorResponse = require('../utils/errorResponse');
+const bcrypt = require('bcrypt');
 
 const getAllUsers = asyncHandler(async (req, res, next) => {
-    const users = await User.find();
+    const { populate } = req.query;
+    const users = await User.find().populate(populate);
 
     res.status(200).send({
         "success": true,
@@ -14,11 +16,12 @@ const getAllUsers = asyncHandler(async (req, res, next) => {
 
 const getUser = asyncHandler(async (req, res, next) => {
     const { id } = req.params;
+    const { populate } = req.query;
 
     if (!mongoose.isValidObjectId(id)) {
         return next(new ErrorResponse("id not valid", 403));
     }
-    const user = await User.findById(id);
+    const user = await User.findById(id).populate(populate);
 
     res.status(200).send({
         "success": true,
@@ -46,17 +49,24 @@ const deleteUser = asyncHandler(async (req, res, next) => {
 
 const modifyUser = asyncHandler(async (req, res, next) => {
     const { id } = req.params;
-    const { city, name } = req.body;
+    const { user } = req.body;
 
     if (!mongoose.isValidObjectId(id)) {
         return next(new ErrorResponse("User id not valid", 403));
     }
+    if (!user) {
+        return next(new ErrorResponse("define the fields that you want to update", 403));
+    }
+    if(user.password){
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(user.password, salt);
+    }
 
-    const user = await User.findByIdAndUpdate(id, { city, name });
+    const existUser = await User.findByIdAndUpdate(id, { ...user });
 
     return res.status(200).send({
         "success": true,
-        user
+        existUser
     });
 });
 
