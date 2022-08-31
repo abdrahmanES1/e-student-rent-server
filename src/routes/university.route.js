@@ -3,10 +3,14 @@ const { getAllUniversities, getUniversity, deleteUniversity, modifyUniversity, c
 
 const route = Router();
 
-route.get('/universities', getAllUniversities);
-route.get('/universities/:id', getUniversity);
-route.post('/universities', createUniversity);
-route.put('/universities/:id', modifyUniversity);
-route.delete('/universities/:id', deleteUniversity);
+route.get('', getAllUniversities);
+route.post('', createUniversity);
+route.get('/:id', getUniversity);
+route.put('/:id', modifyUniversity);
+route.delete('/:id', deleteUniversity);
+
+
+
+
 
 module.exports = route;

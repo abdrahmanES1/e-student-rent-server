@@ -3,8 +3,8 @@ const { getAllUsers, getUser, modifyUser, deleteUser} = require('../controllers/
 const { protected, authorize } = require('../middlewares/auth')
 const route = Router();
 
-route.get('/users', getAllUsers);
-route.get('/users/:id', getUser);
-route.put('/users/:id', modifyUser);
-route.delete('/users/:id' , deleteUser);
+route.get('', getAllUsers);
+route.get('/:id', getUser);
+route.put('/:id', modifyUser);
+route.delete('/:id' , deleteUser);
 module.exports = route;
