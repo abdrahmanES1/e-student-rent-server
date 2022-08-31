@@ -4,15 +4,15 @@ const UserModel = require('../models/user.model');
 const bcrypt = require('bcrypt');
 
 const register = asyncHandler(async (req, res, next) => {
-    const { username, email, password, isStudent } = req.body;
-   
-    if (!(username && email && password && isStudent))
+    const { username, email, password, isStudent, role } = req.body;
+    console.log(username, email, password, isStudent);
+    if (!(username && email && password && isStudent !== undefined))
         {return next(new ErrorResponse("all fields is required", 403));}
 
     if (await UserModel.findOne({email})){
         return next(new ErrorResponse("email Already exist", 403));
     }
-    const user = await UserModel.create({ username, email, password, isStudent })
+    const user = await UserModel.create({ username, email, password, isStudent, role })
 
     sendTokenResponse(user, 200, res);
 })

@@ -36,13 +36,13 @@ const deleteUser = asyncHandler(async (req, res, next) => {
     }
 
     const user = await User.deleteOne({ _id: id });
+
     if (user.deletedCount == 0) {
         return next(new ErrorResponse("User  not found", 403))
     }
 
     return res.status(200).send({
-        "success": true,
-        user
+        "success": true
     });
 
 });
@@ -64,10 +64,17 @@ const modifyUser = asyncHandler(async (req, res, next) => {
 
     const existUser = await User.findByIdAndUpdate(id, { ...user });
 
+    if (!existUser) {
+        return next(new ErrorResponse("User not Exist", 403));
+    }
+
     return res.status(200).send({
         "success": true,
-        existUser
+        user: existUser
     });
 });
+
+// TODO:
+// get user reviews
 
 module.exports = { getAllUsers, getUser, deleteUser, modifyUser };

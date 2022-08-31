@@ -59,9 +59,10 @@ const modifyReview = asyncHandler(async (req, res, next) => {
         return next(new ErrorResponse("Review id not valid", 403));
     }
 
-    const review = await Review.findByIdAndUpdate(id, { description, rating, local, user });
+    const review = await Review.findOneAndUpdate(id, { description, rating, local, user });
 
     if (!review) { return next(new ErrorResponse('Review Does Not Found', 403)) }
+
 
     return res.status(200).send({
         "success": true,

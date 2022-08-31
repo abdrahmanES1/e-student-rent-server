@@ -6,5 +6,5 @@ const route = Router();
 route.get('/users', getAllUsers);
 route.get('/users/:id', getUser);
 route.put('/users/:id', modifyUser);
-route.delete('/users/:id',protected , deleteUser);
+route.delete('/users/:id' , deleteUser);
 module.exports = route;

@@ -8,11 +8,10 @@ const protected = asyncHandler(async (req, res, next) => {
     const token = req.header('x-auth-token');
     if (!token) { return next(new ErrorResponse("Not authorized to access this route and token not exist", 401)) }
     
-    console.log(token)
     try {
         const decoded = await jwt.verify(token, process.env.TOKEN_SECRET);
         const user = await User.findById(decoded.id);
-    
+        
         if(user){
             req.user = user;
         }
@@ -23,6 +22,11 @@ const protected = asyncHandler(async (req, res, next) => {
 
     next();
 })
+
+/**
+ * 
+ * @param  {...String} roles 
+ */
 
 const authorize = (...roles) => {
     async (req, res, next) => {

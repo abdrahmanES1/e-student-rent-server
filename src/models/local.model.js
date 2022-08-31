@@ -9,7 +9,6 @@ const LocalSchema = new Schema({
     adresse: { type: String, required: [true, 'please add a adresse'] },
     price: { type: Number, required: [true, 'please add a price'] },
     nbrRooms: { type: Number, required: [true, 'please add a room\'s Number'] },
-    mainImage: { type: String, required: [true, 'please add a Image'] },
     images: [{ type: String }],
     localisation: {
         lat: { type: Number, required: true },

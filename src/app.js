@@ -2,6 +2,7 @@ const express = require('express');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const connectDB = require('./config/database')
+const fileUpload = require('express-fileupload');
 const cluster = require('cluster');
 const cors = require('cors');
 const errorMiddleware = require('./middlewares/error.middleware');
@@ -12,6 +13,8 @@ require('dotenv').config({ path: __dirname + '/../.env' })
 const app = express();
 const PORT = process.env.PORT || 4000;
 app.use(helmet());
+app.use(fileUpload());
+
 if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }
