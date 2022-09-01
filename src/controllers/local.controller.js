@@ -58,13 +58,13 @@ const deleteLocal = asyncHandler(async (req, res, next) => {
 
 const modifyLocal = asyncHandler(async (req, res, next) => {
     const { id } = req.params;
-    const { title, description, adresse, price, nbrRooms, images, localisation, user, universities } = req.body;
+    const { title, description, adresse, price, area, nbrRooms, images, localisation, user, universities } = req.body;
 
     if (!mongoose.isValidObjectId(id)) {
         return next(new ErrorResponse("Local id not valid", 403));
     }
 
-    const local = await Local.findOneAndUpdate(id, { title, description, adresse, price, nbrRooms, images, localisation, user, universities });
+    const local = await Local.findOneAndUpdate(id, { title, description, adresse, price, area, nbrRooms, images, localisation, user, universities });
 
     if (!local) { return next(new ErrorResponse('Local Does Not Found', 403)) }
 
@@ -76,14 +76,14 @@ const modifyLocal = asyncHandler(async (req, res, next) => {
 });
 
 const createLocal = asyncHandler(async (req, res, next) => {
-    const { title, description, adresse, price, nbrRooms, localisation, user, universities, images } = req.body;
+    const { title, description, adresse, price, area, nbrRooms, localisation, user, universities, images } = req.body;
 
-    if (!(description && title && adresse && price && user && nbrRooms && localisation && universities && images)) {
+    if (!(description && title && adresse && price && area && user && nbrRooms && localisation && universities && images)) {
         return next(new ErrorResponse('All Fields is Required', 403))
     }
 
     const local = await Local.create({
-        title, description, adresse, price, nbrRooms, localisation, user, images, universities
+        title, description, adresse, price, area, nbrRooms, localisation, user, images, universities
     })
 
     res.status(200).send({
@@ -92,11 +92,10 @@ const createLocal = asyncHandler(async (req, res, next) => {
     })
 })
 
-// TODO : get all reviews for a post
 const getLocalReviews = asyncHandler(async (req, res, next) => {
     const { id } = req.params;
 
-    const reviews = await Review.find({local: id});
+    const reviews = await Review.find({ local: id });
 
     res.status(200).send({
         "success": true,
@@ -104,8 +103,35 @@ const getLocalReviews = asyncHandler(async (req, res, next) => {
     })
 })
 
+const getFiltredLocals = asyncHandler(async (req, res, next) => {
+    const { q } = req.query;
 
-module.exports = { getAllLocals, getLocal, deleteLocal, modifyLocal, createLocal, getLocalReviews };
+    let filter = {
+        "$and": [
+            {
+                $or: [
+                    { adresse: { $regex: '^' + q, $options: 'i' } },
+                    { title: { $regex: '^' + q, $options: 'i' } },
+                ]
+            }
+        ]
+    };
+
+    for (const key in req.query) {
+        if (key != 'q') { filter["$and"].push({ [key]: { $lte: parseFloat(req.query[key]) } }) }
+    }
+
+    console.log(filter);
+    const locals = await Local.find(filter).sort()
+
+    res.status(200).send({
+        locals
+    });
+
+});
+
+
+module.exports = { getAllLocals, getLocal, deleteLocal, modifyLocal, createLocal, getLocalReviews, getFiltredLocals };
 
 
 

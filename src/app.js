@@ -1,7 +1,7 @@
 const express = require('express');
 const helmet = require('helmet');
 const morgan = require('morgan');
-const connectDB = require('./config/database')
+const connectDB = require('../config/database')
 const fileUpload = require('express-fileupload');
 const cluster = require('cluster');
 const cors = require('cors');
@@ -24,9 +24,10 @@ app.use(cors({
 }))
 
 app.use(errorMiddleware);
+
 connectDB();
-app.listen(PORT, () => {
-    console.log(`server running in port ${PORT}`);
+app.listen(PORT, async() => {
+    console.log(`server running in  http://localhost:${PORT}/api/`);
 })
 
 // if (cluster.isPrimary) {

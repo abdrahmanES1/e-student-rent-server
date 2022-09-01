@@ -29,11 +29,10 @@ const protected = asyncHandler(async (req, res, next) => {
  */
 
 const authorize = (...roles) => {
-    async (req, res, next) => {
+   return async (req, res, next) => {
         if (!roles.includes(req.user.role)) {
             return next(new ErrorResponse(`${req.user.role} role is not authorized to access this route`, 403))
         }
-
         next();
     }
 }
