@@ -7,10 +7,10 @@ const route = Router();
 
 route.get('', getAllLocals);
 route.get('/filter', getFiltredLocals);
-route.post('', protected, authorize('user') , createLocal);
+route.post('', protected, authorize('user', 'admin') , createLocal);
 route.get('/:id', getLocal);
-route.put('/:id', modifyLocal);
-route.delete('/:id', deleteLocal);
+route.put('/:id', protected, authorize('user', 'admin'), modifyLocal);
+route.delete('/:id', protected, authorize('user','admin'), deleteLocal);
 route.get('/:id/reviews', getLocalReviews );
 
 module.exports = route;

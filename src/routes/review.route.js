@@ -3,12 +3,12 @@ const { getAllReviews, getReview, modifyReview, deleteReview, createReview } = r
 const { protected ,  authorize }= require('../middlewares/auth')
 const route = Router();
 
-// route.use(protected);
+
 route.get('', getAllReviews);
 route.post('', createReview);
 route.get('/:id', getReview);
-route.put('/:id', modifyReview);
-route.delete('/:id', deleteReview);
+route.put('/:id', protected, authorize('user'), modifyReview);
+route.delete('/:id', protected, authorize('user', 'admin'), deleteReview);
 
 
 // get user reviews
