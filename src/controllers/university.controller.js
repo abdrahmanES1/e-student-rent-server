@@ -4,7 +4,8 @@ const University = require('../models/university.model');
 const ErrorResponse = require('../utils/errorResponse');
 
 const getAllUniversities = asyncHandler(async (req, res, next) => {
-    const universities = await University.find();
+    const {max, min} = req.params;
+    const universities = await University.find().skip(min).limit(max);
 
     res.status(200).send({
         "success": true,

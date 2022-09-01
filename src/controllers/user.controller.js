@@ -5,8 +5,8 @@ const ErrorResponse = require('../utils/errorResponse');
 const bcrypt = require('bcrypt');
 
 const getAllUsers = asyncHandler(async (req, res, next) => {
-    const { populate } = req.query;
-    const users = await User.find().populate(populate);
+    const { populate, min ,max } = req.query;
+    const users = await User.find().populate(populate).skip(min).limit(max);
 
     res.status(200).send({
         "success": true,

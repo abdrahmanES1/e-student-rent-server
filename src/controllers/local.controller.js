@@ -6,8 +6,8 @@ const ErrorResponse = require('../utils/errorResponse');
 const { deleteImage } = require('../utils/fileUpload');
 
 const getAllLocals = asyncHandler(async (req, res, next) => {
-    const { populate } = req.query;
-    const locals = await Local.find().populate(populate);
+    const { populate , min, max} = req.query;
+    const locals = await Local.find().populate(populate).skip(min).limit(max);
 
     res.status(200).send({
         "success": true,
@@ -55,7 +55,7 @@ const deleteLocal = asyncHandler(async (req, res, next) => {
     });
 
 });
-
+ 
 const modifyLocal = asyncHandler(async (req, res, next) => {
     const { id } = req.params;
     const { title, description, adresse, price, area, nbrRooms, images, localisation, user, universities } = req.body;
@@ -104,7 +104,7 @@ const getLocalReviews = asyncHandler(async (req, res, next) => {
 })
 
 const getFiltredLocals = asyncHandler(async (req, res, next) => {
-    const { q } = req.query;
+    const { q , max, min} = req.query;
 
     let filter = {
         "$and": [
@@ -122,7 +122,7 @@ const getFiltredLocals = asyncHandler(async (req, res, next) => {
     }
 
     console.log(filter);
-    const locals = await Local.find(filter).sort()
+    const locals = await Local.find(filter).skip(min).limit(max);
 
     res.status(200).send({
         locals

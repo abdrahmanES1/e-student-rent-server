@@ -8,7 +8,8 @@ const cors = require('cors');
 const errorMiddleware = require('./middlewares/error.middleware');
 const numCPUs = require('node:os').cpus().length;
 require('dotenv').config({ path: __dirname + '/../.env' }) 
-
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('../swagger.json');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -24,7 +25,11 @@ app.use(cors({
 }))
 
 app.use(errorMiddleware);
-
+app.use(
+    '/api-docs',
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerDocument)
+);
 connectDB();
 app.listen(PORT, async() => {
     console.log(`server running in  http://localhost:${PORT}/api/`);
