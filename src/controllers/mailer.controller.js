@@ -1,5 +1,5 @@
 const asyncHandler = require('../middlewares/async');
-const sendEmail = require('../utils/mailer');
+const {sendEmail} = require('../utils/mailer');
 const ErrorResponse = require('../utils/errorResponse');
 
 const postEmail = asyncHandler(async(req, res, next)=>{

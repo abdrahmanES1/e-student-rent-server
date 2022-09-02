@@ -1,8 +1,11 @@
 const { default: mongoose } = require('mongoose');
 const asyncHandler = require('../middlewares/async');
 const User = require('../models/user.model');
+const Local = require('../models/local.model');
 const ErrorResponse = require('../utils/errorResponse');
 const bcrypt = require('bcrypt');
+require('dotenv').config({ path: __dirname + "/../../.env" });
+
 
 const getAllUsers = asyncHandler(async (req, res, next) => {
     const { populate, min ,max } = req.query;
@@ -58,8 +61,7 @@ const modifyUser = asyncHandler(async (req, res, next) => {
         return next(new ErrorResponse("define the fields that you want to update", 403));
     }
     if(user.password){
-        const salt = await bcrypt.genSalt(10);
-        user.password = await bcrypt.hash(user.password, salt);
+        user.password = await bcrypt.hash(user.password, Number(process.env.BCRYPT_SALT));
     }
 
     const existUser = await User.findByIdAndUpdate(id, { ...user });
@@ -74,7 +76,16 @@ const modifyUser = asyncHandler(async (req, res, next) => {
     });
 });
 
-// TODO:
-// get user reviews
 
-module.exports = { getAllUsers, getUser, deleteUser, modifyUser };
+const getUserLocals = asyncHandler(async (req, res, next) => {
+    const { id } = req.params;
+    const { populate, min, max } = req.query;
+    const locals = await Local.find({user: id}).populate(populate).skip(min).limit(max);
+
+    res.status(200).send({
+        "success": true,
+        locals
+    });
+})
+
+module.exports = { getAllUsers, getUser, deleteUser, modifyUser, getUserLocals };

@@ -1,11 +1,15 @@
 const asyncHandler = require('../middlewares/async');
 const ErrorResponse = require('../utils/errorResponse');
 const UserModel = require('../models/user.model');
+const Token = require('../models/token.model');
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
+const {sendResetPasswordEmail, sendEmail}= require('../utils/mailer');
+
+require('dotenv').config({path:__dirname+"/../../.env"});
 
 const register = asyncHandler(async (req, res, next) => {
     const { username, email, password, isStudent, role } = req.body;
-    console.log(username, email, password, isStudent);
     if (!(username && email && password && isStudent !== undefined))
         {return next(new ErrorResponse("all fields is required", 403));}
 
@@ -26,6 +30,9 @@ const login = asyncHandler(async (req, res, next) => {
     const user = await UserModel.findOne({ email }).select('+password');
     if (!user) {
         return next(new ErrorResponse('email does not Exist please register first', 401));
+    }
+    if(user.blocked){
+        return next(new ErrorResponse('this user Blocked by an admin ', 401));
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
@@ -55,4 +62,78 @@ const sendTokenResponse = (user, statusCode, res) => {
     });
 };
 
-module.exports = { register, login, getMe }
+const forgetPassword = asyncHandler(async(req, res, next)=>{
+    const { email } = req.body;
+    const user = await UserModel.findOne({email: email});
+
+    if(!user){
+        return next(new ErrorResponse("email does not exist", 403));
+    }
+    let token = await Token.findOne({ userId: user._id });
+
+    if (token) {
+        await token.deleteOne();
+    };
+
+    let resetToken = crypto.randomBytes(32).toString("hex");
+    const hash = await bcrypt.hash(resetToken, Number(process.env.BCRYPT_SALT));
+    
+
+    await new Token({
+        userId: user._id,
+        token: hash,
+        createdAt: Date.now(),
+    }).save();
+
+    const link = `${process.env.CLIENT_URL}/reset-password?token=${resetToken}&id=${user._id}`;
+
+    try {
+        await sendResetPasswordEmail(user.email, link);
+    } catch (error) {
+        return next(new ErrorResponse(error, 403));
+    }
+   
+    res.status(200).send({
+        "success": true,
+        "message": "email sent successfully to " + user.email
+    })
+
+})
+
+const resetPassword = asyncHandler(async (req, res, next) => {
+    const { userId, token, password } = req.body;
+    if (!(userId&& token&& password)) {
+        return next(new ErrorResponse("All Fields is required", 401));
+    }
+    
+    let passwordResetToken = await Token.findOne({ userId });
+    if (!passwordResetToken) {
+        return next( new ErrorResponse("Invalid or expired password reset token", 401))
+    }
+    const isValid = await bcrypt.compare(token, passwordResetToken.token);
+    if (!isValid) {
+        return next(new ErrorResponse("Invalid or expired password reset token", 401))
+    }
+    const hash = await bcrypt.hash(password, Number(process.env.BCRYPT_SALT));
+    await UserModel.updateOne(
+        { _id: userId },
+        { $set: { password: hash } },
+        { new: true }
+    );
+    const user = await UserModel.findById({ _id: userId });
+
+    try {
+        await sendEmail("E-Student Rent Paltform", user.email, "password Reseted successfully", "password Resetd successfully"  )
+    } catch (error) {
+        return next(new ErrorResponse(error, 403));
+    }
+
+    await passwordResetToken.deleteOne();
+
+    res.status(200).send({
+        "success": true,
+        "message": "your password Reseted successfully"
+    })
+})
+
+module.exports = { register, login, getMe, forgetPassword, resetPassword };

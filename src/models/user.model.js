@@ -27,6 +27,10 @@ const UserSchema = new Schema({
         enum: ['user', 'admin'],
         default: 'user'
     },
+    blocked: {
+        type: Boolean,  enum: [true, false],
+        default: false
+},
     isStudent: { type: Boolean, required: true },
     phone: { type: Number },
     adresse: { type: String },
