@@ -4,17 +4,20 @@ const UserModel = require('../models/user.model');
 const Token = require('../models/token.model');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
-const {sendResetPasswordEmail, sendEmail}= require('../utils/mailer');
+const { sendResetPasswordEmail, sendEmail } = require('../utils/mailer');
 
-require('dotenv').config({path:__dirname+"/../../.env"});
+require('dotenv').config({ path: __dirname + "/../../.env" });
 
 const register = asyncHandler(async (req, res, next) => {
-    const { username, email, password, isStudent, role } = req.body;
-    if (!(username && email && password && isStudent !== undefined))
-        {return next(new ErrorResponse("all fields is required", 403));}
+    const { username, email, password, isStudent, role, adresse, phone } = req.body;
+    if (!(username && email && password && isStudent !== undefined)) { return next(new ErrorResponse("All Fields is Required", 403)); }
 
-    if (await UserModel.findOne({email})){
-        return next(new ErrorResponse("email Already exist", 403));
+    if (!isStudent && !(adresse && phone)) {
+        return next(new ErrorResponse("Adresse and Phone Fields is Required  for Landlord", 403));
+    }
+
+    if (await UserModel.findOne({ email })) {
+        return next(new ErrorResponse("Email Already Exist", 403));
     }
     const user = await UserModel.create({ username, email, password, isStudent, role })
 
@@ -24,15 +27,15 @@ const register = asyncHandler(async (req, res, next) => {
 const login = asyncHandler(async (req, res, next) => {
     const { email, password } = req.body;
     if (!email || !password) {
-        return next(new ErrorResponse('Please provide an email and password', 400));
+        return next(new ErrorResponse('Please Provide an Email and Password', 400));
     }
 
     const user = await UserModel.findOne({ email }).select('+password');
     if (!user) {
-        return next(new ErrorResponse('email does not Exist please register first', 401));
+        return next(new ErrorResponse('Email Does Not Exist Please Register First', 401));
     }
-    if(user.blocked){
-        return next(new ErrorResponse('this user Blocked by an admin ', 401));
+    if (user.blocked) {
+        return next(new ErrorResponse('this user Blocked by an Admin ', 401));
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
@@ -55,19 +58,19 @@ const getMe = asyncHandler(async (req, res, next) => {
 
 const sendTokenResponse = (user, statusCode, res) => {
     const token = user.getSignedJwtToken();
-    
+
     res.status(statusCode).json({
         success: true,
         token,
     });
 };
 
-const forgetPassword = asyncHandler(async(req, res, next)=>{
+const forgetPassword = asyncHandler(async (req, res, next) => {
     const { email } = req.body;
-    const user = await UserModel.findOne({email: email});
+    const user = await UserModel.findOne({ email: email });
 
-    if(!user){
-        return next(new ErrorResponse("email does not exist", 403));
+    if (!user) {
+        return next(new ErrorResponse("Email Does Not Exist", 403));
     }
     let token = await Token.findOne({ userId: user._id });
 
@@ -77,7 +80,7 @@ const forgetPassword = asyncHandler(async(req, res, next)=>{
 
     let resetToken = crypto.randomBytes(32).toString("hex");
     const hash = await bcrypt.hash(resetToken, Number(process.env.BCRYPT_SALT));
-    
+
 
     await new Token({
         userId: user._id,
@@ -92,23 +95,23 @@ const forgetPassword = asyncHandler(async(req, res, next)=>{
     } catch (error) {
         return next(new ErrorResponse(error, 403));
     }
-   
+
     res.status(200).send({
         "success": true,
-        "message": "email sent successfully to " + user.email
+        "message": "Email Sent Successfully To " + user.email
     })
 
 })
 
 const resetPassword = asyncHandler(async (req, res, next) => {
     const { userId, token, password } = req.body;
-    if (!(userId&& token&& password)) {
+    if (!(userId && token && password)) {
         return next(new ErrorResponse("All Fields is required", 401));
     }
-    
+
     let passwordResetToken = await Token.findOne({ userId });
     if (!passwordResetToken) {
-        return next( new ErrorResponse("Invalid or expired password reset token", 401))
+        return next(new ErrorResponse("Invalid or expired password reset token", 401))
     }
     const isValid = await bcrypt.compare(token, passwordResetToken.token);
     if (!isValid) {
@@ -123,7 +126,7 @@ const resetPassword = asyncHandler(async (req, res, next) => {
     const user = await UserModel.findById({ _id: userId });
 
     try {
-        await sendEmail("E-Student Rent Paltform", user.email, "password Reseted successfully", "password Resetd successfully"  )
+        await sendEmail("E-Student Rent Paltform", user.email, "password Reseted successfully", "password Resetd successfully")
     } catch (error) {
         return next(new ErrorResponse(error, 403));
     }
@@ -132,7 +135,7 @@ const resetPassword = asyncHandler(async (req, res, next) => {
 
     res.status(200).send({
         "success": true,
-        "message": "your password Reseted successfully"
+        "message": "Your Password Reseted Successfully"
     })
 })
 
