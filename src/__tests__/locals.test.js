@@ -25,7 +25,7 @@ describe('Locals', () => {
         images: "https://res.cloudinary.com/abdrahmanes/image/upload/v1661785068/xpkxyrgwuxtmie3bmgfd.png"
     }
 
-    describe('POST /locals', () => {
+    describe('POST /local', () => {
         // from && subject && text
         test('Given without token Fields', async () => {
             const { statusCode, body } = await (await supertest(app).post(`/api/locals`).send(newLocal))
@@ -43,25 +43,25 @@ describe('Locals', () => {
     })
 
 
-    describe('Get / Single locals', () => {
-        // from && subject && text
-        it('Given correct id', async () => {
-            const id = "630f52f01a37f4ae754eafd1"
-            const { statusCode, body } = await supertest(app).get(`/api/locals/${id}`);  
-            expect(statusCode).toBe(200)
-            expect(body.local).toBeDefined()
-            expect(body.local._id).toBeDefined()
-            expect(body.success).toBeTruthy()
-        })
+    // describe('Get / Single locals', () => {
+    //     // from && subject && text
+    //     it('Given correct id', async () => {
+    //         const id = "630f52f01a37f4ae754eafd1"
+    //         const { statusCode, body } = await supertest(app).get(`/api/locals/${id}`);  
+    //         expect(statusCode).toBe(200)
+    //         expect(body.local).toBeDefined()
+    //         expect(body.local._id).toBeDefined()
+    //         expect(body.success).toBeTruthy()
+    //     })
 
-        it('Given wrong id', async () => {
-            const id = "630f52f01a35f4ae754eafd1"
-            const { statusCode, body } = await supertest(app).get(`/api/locals/${id}`);
-            expect(statusCode).toBe(403)
-            expect(body.message).toBe("Local Does Not Exist")
-            expect(body.success).toBeFalsy()
-        })
+    //     it('Given wrong id', async () => {
+    //         const id = "630f52f01a35f4ae754eafd1"
+    //         const { statusCode, body } = await supertest(app).get(`/api/locals/${id}`);
+    //         expect(statusCode).toBe(403)
+    //         expect(body.message).toBe("Local Does Not Exist")
+    //         expect(body.success).toBeFalsy()
+    //     })
 
-    })
+    // })
 
 })
