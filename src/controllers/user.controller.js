@@ -25,7 +25,8 @@ const getUser = asyncHandler(async (req, res, next) => {
         return next(new ErrorResponse("id not valid", 403));
     }
     const user = await User.findById(id).populate(populate);
-
+    
+    if (!user) { return next(new ErrorResponse('User Does Not Exist', 403)) }
     res.status(200).send({
         "success": true,
         user

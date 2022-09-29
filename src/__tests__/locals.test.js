@@ -14,14 +14,32 @@ describe('Locals', () => {
         mongoose.disconnect()
     })
 
+
+    const newLocal = {
+        title: "test", description: "description", adresse: "adresse", price: 102, area: 10, nbrRooms: 2, localisation: {
+            lat: -2,
+            lng: 7.7868
+        },
+        // user,
+        // universities,
+        images: "https://res.cloudinary.com/abdrahmanes/image/upload/v1661785068/xpkxyrgwuxtmie3bmgfd.png"
+    }
+
+    describe('POST /locals', () => {
+        // from && subject && text
+        test('Given without token Fields', async () => {
+            const { statusCode, body } = await (await supertest(app).post(`/api/locals`).send(newLocal))
+            expect(statusCode).toBe(401)
+            expect(body.message).toEqual("Not authorized to access this route and token not exist")
+        })
+    })
+
     describe('Get / ALL locals', () => {
         // from && subject && text
         test('Given id', async () => {
-
             const { statusCode, body } = await supertest(app).get(`/api/locals`);
             expect(statusCode).toBe(200)
         })
-
     })
 
 
@@ -43,7 +61,6 @@ describe('Locals', () => {
             expect(body.message).toBe("Local Does Not Exist")
             expect(body.success).toBeFalsy()
         })
-
 
     })
 
