@@ -94,8 +94,9 @@ const createLocal = asyncHandler(async (req, res, next) => {
 
 const getLocalReviews = asyncHandler(async (req, res, next) => {
     const { id } = req.params;
+    const { populate } = req.query;
 
-    const reviews = await Review.find({ local: id });
+    const reviews = await Review.find({ local: id }).populate(populate);
 
     res.status(200).send({
         "success": true,
@@ -120,8 +121,6 @@ const getFiltredLocals = asyncHandler(async (req, res, next) => {
     for (const key in req.query) {
         if (key != 'q') { filter["$and"].push({ [key]: { $lte: parseFloat(req.query[key]) } }) }
     }
-
-    console.log(filter);
     const locals = await Local.find(filter).skip(min).limit(max);
 
     res.status(200).send({

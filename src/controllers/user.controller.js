@@ -9,7 +9,7 @@ require('dotenv').config({ path: __dirname + "/../../.env" });
 
 const getAllUsers = asyncHandler(async (req, res, next) => {
     const { populate, min ,max } = req.query;
-    const users = await User.find().populate(populate).skip(min).limit(max);
+    const users = await User.find({role: "user"}).populate(populate).skip(min).limit(max);
 
     res.status(200).send({
         "success": true,

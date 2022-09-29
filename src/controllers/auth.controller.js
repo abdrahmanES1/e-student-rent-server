@@ -19,7 +19,7 @@ const register = asyncHandler(async (req, res, next) => {
     if (await UserModel.findOne({ email })) {
         return next(new ErrorResponse("Email Already Exist", 403));
     }
-    const user = await UserModel.create({ username, email, password, isStudent, role })
+    const user = await UserModel.create({ username, email, password, isStudent, role, adresse, phone })
 
     sendTokenResponse(user, 200, res);
 })
