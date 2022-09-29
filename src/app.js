@@ -28,11 +28,14 @@ function createServer() {
 
     const conn = async () => {
     }
-     connectDB(async () => {
-        await app.listen(PORT, async () => {
-            console.log(`server running in  http://localhost:${PORT}/api/`);
-        })
-    });
+    if (process.env.NODE_ENV !== 'test') {
+        connectDB(async () => {
+            await app.listen(PORT, async () => {
+                console.log(`server running in  http://localhost:${PORT}/api/`);
+            })
+        });
+    }
+     
 
     return app
 }
