@@ -4,7 +4,7 @@ const User = require('../models/user.model');
 const asyncHandler = require('./async');
 require('dotenv').config({ path: __dirname + '../../.env' });
 
-const protected = asyncHandler(async (req, res, next) => {
+const enableProtection = asyncHandler(async (req, res, next) => {
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
     if (token == null) { return next(new ErrorResponse("Not authorized to access this route and token not exist", 401)) }
@@ -38,4 +38,4 @@ const authorize = (...roles) => {
     }
 }
 
-module.exports = { protected, authorize }
+module.exports = { enableProtection, authorize }

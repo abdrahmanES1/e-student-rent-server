@@ -1,10 +1,10 @@
 const Router = require('express').Router;
 const { uploadFile, deleteFile } = require('../controllers/upload.controller')
-const { protected, authorize } = require('../middlewares/auth');
+const { enableProtection, authorize } = require('../middlewares/auth');
 const route = Router();
 
 
-route.use(protected)
+route.use(enableProtection)
 route.post('', authorize('user'), uploadFile);
 route.delete('', authorize('user', "admin"), deleteFile);
 
