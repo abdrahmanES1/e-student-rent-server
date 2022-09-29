@@ -3,34 +3,45 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const connectDB = require('../config/database')
 const fileUpload = require('express-fileupload');
-const cluster = require('cluster');
 const cors = require('cors');
-const errorMiddleware = require('./middlewares/error.middleware');
-const numCPUs = require('node:os').cpus().length;
-require('dotenv').config({ path: __dirname + '/../.env' }) 
+const rateLimiterUsingThirdParty = require('./middlewares/rateLimiter');
+require('dotenv').config({ path: __dirname + '/../.env' })
 
-
-
-const app = express();
 const PORT = process.env.PORT || 4000;
-app.use(helmet());
-app.use(fileUpload());
 
-if (process.env.NODE_ENV === 'development') {
-    app.use(morgan('dev'));
+function createServer() {
+    const app = express();
+    app.use(helmet());
+    app.use(fileUpload());
+
+    if (process.env.NODE_ENV === 'development') {
+        app.use(morgan('dev'));
+    }
+    if (process.env.NODE_ENV === 'production') {
+        app.use(rateLimiterUsingThirdParty);
+    }
+
+
+    app.use(express.json());
+    app.use(cors({ origin: process.env.CLIENT_URL }))
+
+
+    const conn = async () => {
+    }
+     connectDB(async () => {
+        await app.listen(PORT, async () => {
+            console.log(`server running in  http://localhost:${PORT}/api/`);
+        })
+    });
+
+    return app
 }
-app.use(express.json());
-app.use(cors({
-    origin: 'http://localhost:3000'
-}))
-
-app.use(errorMiddleware);
 
 
-connectDB();
-app.listen(PORT, async() => {
-    console.log(`server running in  http://localhost:${PORT}/api/`);
-})
+
+
+
+
 
 // if (cluster.isPrimary) {
 //     console.log(`Primary ${process.pid} is running`);
@@ -57,4 +68,4 @@ app.listen(PORT, async() => {
 
 // }
 
-module.exports =  app;
+module.exports = createServer;

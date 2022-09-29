@@ -1,4 +1,4 @@
-const app = require('./src/app.js')
+const createServer = require('./src/app.js')
 const errorMiddleware = require('./src/middlewares/error.middleware.js')
 const authRoute = require('./src/routes/auth.route.js');
 const universitiesRoute = require('./src/routes/university.route.js')
@@ -8,6 +8,8 @@ const localsRoute = require('./src/routes/local.route.js')
 const uploadsRoute = require('./src/routes/upload.route.js')
 const mailerRoute = require('./src/routes/mailer.route.js')
 
+const app = createServer();
+
 app.use("/api/auth", authRoute);
 app.use("/api/universities", universitiesRoute);
 app.use("/api/reviews", reviewsRoute);
@@ -16,9 +18,11 @@ app.use("/api/locals", localsRoute);
 app.use("/api/uploads", uploadsRoute);
 app.use("/api/email", mailerRoute);
 
-app.use(errorMiddleware)
+app.use(errorMiddleware);
 
 process.on('unhandledRejection', (err, promise) => {
     console.log(err);
     process.exit(1);
 });
+
+module.exports = app;

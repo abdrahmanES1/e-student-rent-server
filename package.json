@@ -5,9 +5,9 @@
   "author": "abdrahmanES1 <68553016+abdrahmanES1@users.noreply.github.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon index.js",
-    "start": "node index.js",
-    "test": "jest "
+    "dev": "NODE_ENV=development nodemon index.js",
+    "start": "NODE_ENV=production node index.js",
+    "test": "jest --forceExit --detectOpenHandles"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
@@ -16,17 +16,18 @@
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "express-fileupload": "^1.4.0",
+    "express-rate-limit": "^6.6.0",
     "helmet": "^5.1.1",
-    "jest": "^29.0.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.5.2",
     "nodemailer": "^6.7.8",
-    "supertest": "^6.2.4",
-    "validator": "^13.7.0"
+    "pm2": "^5.2.0"
   },
   "devDependencies": {
     "concurrently": "^7.3.0",
+    "jest": "^29.0.1",
     "morgan": "^1.10.0",
-    "nodemon": "^2.0.19"
+    "nodemon": "^2.0.19",
+    "supertest": "^6.2.4"
   }
 }
