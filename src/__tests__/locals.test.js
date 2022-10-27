@@ -3,25 +3,24 @@ const supertest = require('supertest')
 const connectDB = require("../../config/database")
 require('dotenv').config({ path: __dirname + "/../../.env" });
 const mongoose = require('mongoose')
+const { faker } = require('@faker-js/faker');
 
 describe('Locals', () => {
-
-
-    beforeAll(async()=>{
-       await connectDB(()=>{})
-    })
-    afterAll(()=>{
-        mongoose.disconnect()
+    beforeAll(async () => {
+        await connectDB(() => { })
     })
 
+    afterAll(() => {
+        mongoose.connection.close();
+    })
 
     const newLocal = {
         title: "test", description: "description", adresse: "adresse", price: 102, area: 10, nbrRooms: 2, localisation: {
             lat: -2,
             lng: 7.7868
         },
-        // user,
-        // universities,
+        user:"63238e6b98a64feacb1c17ac",
+        universities:"63238eh9hjd564feacb1c17ac",
         images: "https://res.cloudinary.com/abdrahmanes/image/upload/v1661785068/xpkxyrgwuxtmie3bmgfd.png"
     }
 
