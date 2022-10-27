@@ -27,8 +27,8 @@ const login = asyncHandler(async (req, res, next) => {
         return next(new ErrorResponse('Please Provide an Email and Password', 400));
     }
 
-    const user = await UserModel.findOne({
-        email, $or: [{role: "admin", role: "superadmin" }] }).select('+password');
+    const user = await UserModel.findOne({ email, role: { $in: ["admin", "superadmin"] } }).select('+password')
+
     if (!user) {
         return next(new ErrorResponse('Admin Email Does Not Exist Please Register First', 401));
     }
@@ -44,6 +44,7 @@ const login = asyncHandler(async (req, res, next) => {
 
 const getMe = asyncHandler(async (req, res, next) => {
     const user = await UserModel.findById(req.user.id);
+
     res.status(200).json({
         success: true,
         data: user,
@@ -61,7 +62,7 @@ const sendTokenResponse = (user, statusCode, res) => {
 
 const forgetPassword = asyncHandler(async (req, res, next) => {
     const { email } = req.body;
-    const user = await UserModel.findOne({ email: email, $or: [{ role: "admin", role: "superadmin" }] });
+    const user = await UserModel.findOne({ email, role: { $in: ["admin", "superadmin"] } });
 
     if (!user) {
         return next(new ErrorResponse("Amdin Email Does Not Exist", 403));
@@ -82,7 +83,7 @@ const forgetPassword = asyncHandler(async (req, res, next) => {
         createdAt: Date.now(),
     }).save();
 
-    const link = `${process.env.CLIENT_URL}/reset-password?token=${resetToken}&id=${user._id}`;
+    const link = `${process.env.CLIENT_URL}/admin/reset-password?token=${resetToken}&id=${user._id}`;
 
     try {
         await sendResetPasswordEmail(user.email, link);
