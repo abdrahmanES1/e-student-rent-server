@@ -7,10 +7,10 @@ const route = Router();
 
 
 route.get('', getAllUniversities);
-route.post('', enableProtection, authorize('admin'), createUniversity);
+route.post('', enableProtection, authorize('admin', 'superadmin'), createUniversity);
 route.get('/:id', getUniversity);
-route.put('/:id', enableProtection, authorize('admin'), modifyUniversity);
-route.delete('/:id', enableProtection, authorize('admin'), deleteUniversity);
+route.put('/:id', enableProtection, authorize('admin', 'superadmin'), modifyUniversity);
+route.delete('/:id', enableProtection, authorize('admin', 'superadmin'), deleteUniversity);
 
 
 module.exports = route;

@@ -1,6 +1,7 @@
 const createServer = require('./src/app.js')
 const errorMiddleware = require('./src/middlewares/error.middleware.js')
 const authRoute = require('./src/routes/auth.route.js');
+const adminAuthRoute = require('./src/routes/admin.auth.route.js');
 const universitiesRoute = require('./src/routes/university.route.js')
 const reviewsRoute = require('./src/routes/review.route.js')
 const UsersRoute = require('./src/routes/user.route.js')
@@ -9,7 +10,7 @@ const uploadsRoute = require('./src/routes/upload.route.js')
 const mailerRoute = require('./src/routes/mailer.route.js')
 
 const app = createServer();
-
+app.use("/api/auth/admin", adminAuthRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/universities", universitiesRoute);
 app.use("/api/reviews", reviewsRoute);

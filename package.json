@@ -6,7 +6,10 @@
   "license": "MIT",
   "scripts": {
     "dev": "NODE_ENV=development nodemon index.js",
-    "start": "NODE_ENV=production node index.js",
+    "start:dev": "NODE_ENV=production node index.js",
+    "start:pro": "NODE_ENV=production pm2 start index.js -i max",
+    "stop:pro": "NODE_ENV=production pm2 kill",
+    "restart:pro": "NODE_ENV=production pm2 kill",
     "test": "NODE_ENV=test jest --forceExit"
   },
   "dependencies": {
@@ -24,6 +27,7 @@
     "pm2": "^5.2.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^7.6.0",
     "concurrently": "^7.3.0",
     "jest": "^29.0.1",
     "morgan": "^1.10.0",

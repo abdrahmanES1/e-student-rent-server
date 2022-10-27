@@ -24,8 +24,8 @@ const UserSchema = new Schema({
     },
     role: {
         type: String,
-        enum: ['user', 'admin'],
-        default: 'user'
+        enum: ['student', 'landlord','admin', 'superadmin'],
+        default: 'student'
     },
     blocked: {
         type: Boolean,  enum: [true, false],

@@ -7,8 +7,8 @@ const route = Router();
 route.get('', getAllReviews);
 route.post('', createReview);
 route.get('/:id', getReview);
-route.put('/:id', enableProtection, authorize('user'), modifyReview);
-route.delete('/:id', enableProtection, authorize('user', 'admin'), deleteReview);
+route.put('/:id', enableProtection, authorize('student'), modifyReview);
+route.delete('/:id', enableProtection, authorize('student', 'admin', 'superadmin'), deleteReview);
 
 
 // get user reviews
