@@ -6,6 +6,6 @@ const route = Router();
 route.get('', getAllUsers);
 route.get('/:id', getUser);
 route.get('/:id/locals', getUserLocals);
-route.put('/:id', enableProtection, authorize('user', 'admin', 'superadmin'), modifyUser);
-route.delete('/:id', enableProtection, authorize('user', 'admin', 'superadmin'), deleteUser);
+route.put('/:id', enableProtection, authorize('student','landlord', 'admin', 'superadmin'), modifyUser);
+route.delete('/:id', enableProtection, authorize('student', 'landlord', 'admin', 'superadmin'), deleteUser);
 module.exports = route;

@@ -30,7 +30,7 @@ const login = asyncHandler(async (req, res, next) => {
         return next(new ErrorResponse('Please Provide an Email and Password', 400));
     }
 
-    const user = await UserModel.findOne({ email }).select('+password');
+    const user = await UserModel.findOne({ email, role: { $in: ["student", "landlord"] } }).select('+password');
     if (!user) {
         return next(new ErrorResponse('Email Does Not Exist Please Register First', 401));
     }

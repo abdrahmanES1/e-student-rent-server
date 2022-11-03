@@ -9,7 +9,7 @@ require('dotenv').config({ path: __dirname + "/../../.env" });
 
 const getAllUsers = asyncHandler(async (req, res, next) => {
     const { populate, min ,max } = req.query;
-    const users = await User.find({role: "user"}).populate(populate).skip(min).limit(max);
+    const users = await User.find().populate(populate).skip(min).limit(max);
 
     res.status(200).send({
         "success": true,
@@ -39,7 +39,9 @@ const deleteUser = asyncHandler(async (req, res, next) => {
         return next(new ErrorResponse("User id not valid", 403));
     }
 
+    const locals = await Local.deleteMany({ user: id });
     const user = await User.deleteOne({ _id: id });
+
 
     if (user.deletedCount == 0) {
         return next(new ErrorResponse("User  not found", 403))

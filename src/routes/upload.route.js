@@ -5,7 +5,7 @@ const route = Router();
 
 
 route.use(enableProtection)
-route.post('', authorize('user'), uploadFile);
-route.delete('', authorize('user', "admin", 'superadmin'), deleteFile);
+route.post('', authorize('landlord'), uploadFile);
+route.delete('', authorize('landlord', "admin", 'superadmin'), deleteFile);
 
 module.exports = route;
