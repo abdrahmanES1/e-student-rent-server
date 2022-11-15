@@ -9,17 +9,17 @@ const { sendResetPasswordEmail, sendEmail } = require('../utils/mailer');
 require('dotenv').config({ path: __dirname + "/../../.env" });
 
 const register = asyncHandler(async (req, res, next) => {
-    const { username, email, password, isStudent, role, adresse, phone } = req.body;
-    if (!(username && email && password && isStudent !== undefined)) { return next(new ErrorResponse("All Fields is Required", 403)); }
+    const { username, email, password, role, adresse, phone } = req.body;
+    if (!(username && email && password )) { return next(new ErrorResponse("All Fields is Required", 403)); }
 
-    if (!isStudent && !(adresse && phone)) {
+    if (role == 'landlord' && !(adresse && phone)) {
         return next(new ErrorResponse("Adresse and Phone Fields is Required  for Landlord", 403));
     }
 
     if (await UserModel.findOne({ email })) {
         return next(new ErrorResponse("Email Already Exist", 403));
     }
-    const user = await UserModel.create({ username, email, password, isStudent, role, adresse, phone })
+    const user = await UserModel.create({ username, email, password, role, adresse, phone })
 
     sendTokenResponse(user, 200, res);
 })

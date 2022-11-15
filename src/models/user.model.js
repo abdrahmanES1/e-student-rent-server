@@ -31,7 +31,6 @@ const UserSchema = new Schema({
         type: Boolean,  enum: [true, false],
         default: false
 },
-    isStudent: { type: Boolean, required: true },
     phone: { type: Number },
     adresse: { type: String },
     avatar: { type: String },
